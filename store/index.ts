@@ -18,7 +18,7 @@ export const mutations = mutationTree(state, {
     state.hoge++
   },
   add (state, payload) {
-    state.hoge += payload.fuga
+    state.hoge += payload.piyo
   }
 })
 
