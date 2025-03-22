@@ -25,17 +25,12 @@ export default Vue.extend({
     TodoInput,
     TodoLabel
   },
-  data () {
-    return {
-      todoList: [] as Todo[]
-    }
-  },
   methods: {
     loadData: async function () {
       console.log('loadData')
 
       // データの読み込み処理
-      this.todoList = [] as Todo[]
+      this.$accessor.actionInitialize()
       const cookie: MyCookie = new MyCookie()
       for (let i = 0; ; i++) {
         const id = cookie.getValue('id' + i, '')
@@ -46,12 +41,14 @@ export default Vue.extend({
         const date = new Date(cookie.getNumber('date' + i, 0))
         const text = cookie.getValue('text' + i, '')
         const color = cookie.getValue('color' + i, '')
-        this.todoList.push({
-          id: id,
-          done: done,
-          date: date,
-          text: text,
-          color: color
+        this.$accessor.actionPush({
+          todo: {
+            id: id,
+            done: done,
+            date: date,
+            text: text,
+            color: color
+          }
         })
       }
     },
@@ -59,10 +56,11 @@ export default Vue.extend({
       console.log('saveData')
 
       // データの書き込み処理
+      const todoList = this.$accessor.todoList
       const cookie: MyCookie = new MyCookie()
       let i = 0
-      for (; i < this.todoList.length; i++) {
-        const todo = this.todoList[i]
+      for (; i < todoList.length; i++) {
+        const todo = todoList[i]
         cookie.setValue('id' + i, todo.id)
         cookie.setBool('done' + i, todo.done)
         cookie.setNumber('date' + i, todo.date.getTime())
@@ -72,30 +70,30 @@ export default Vue.extend({
       cookie.setValue('id' + i, '')
     },
     addTodo: function (text: string, color: string) {
-      this.todoList = [...this.todoList, {
-        id: (new Date()).getTime().toString(),
-        done: false,
-        date: new Date(),
-        text: text,
-        color: color
-      }]
+      this.$accessor.actionAdd({
+        todo: {
+          id: (new Date()).getTime().toString(),
+          done: false,
+          date: new Date(),
+          text: text,
+          color: color
+        }
+      })
       this.saveData()
     },
     removeTodo: function (id: string) {
-      this.todoList = this.todoList.filter(todo => todo.id !== id)
+      this.$accessor.actionRemove({ id: id })
       this.saveData()
     },
     doneTodo: function (id: string) {
-      const todo = this.todoList.find(todo => todo.id === id)
-      if (todo) {
-        todo.done = !todo.done
-        this.saveData()
-      }
+      this.$accessor.actionDone({ id: id })
+      this.saveData()
     }
   },
   computed: {
     sortedTodo: function (): Todo[] {
-      return this.todoList.slice().sort((a, b) => {
+      const todoList = this.$accessor.todoList.slice()
+      return todoList.sort((a: Todo, b: Todo) => {
         return b.date.getTime() - a.date.getTime()
       })
     }
