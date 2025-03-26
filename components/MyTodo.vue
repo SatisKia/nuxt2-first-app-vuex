@@ -92,6 +92,7 @@ export default Vue.extend({
   },
   computed: {
     sortedTodo: function (): Todo[] {
+      // 算出プロパティではデータを直接変更することができないため、sliceで配列をコピー
       const todoList = this.$accessor.todoList.slice()
       return todoList.sort((a: Todo, b: Todo) => {
         return b.date.getTime() - a.date.getTime()
