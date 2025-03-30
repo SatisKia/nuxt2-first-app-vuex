@@ -1,5 +1,7 @@
 <template>
-  <my-todo />
+  <div id="app">
+    <my-todo />
+  </div>
 </template>
 
 <script lang="ts">
@@ -11,8 +13,9 @@ export default Vue.extend({
 </script>
 
 <style>
-.body {
-  width: 320px;
-  margin: 0;
+#app {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 </style>
