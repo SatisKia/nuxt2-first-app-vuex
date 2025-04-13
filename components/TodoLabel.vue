@@ -85,6 +85,7 @@ export default Vue.extend({
   margin: 4px 0 0 0;
 }
 .table {
+  width: 100%;
   border: 0;
 }
 .td {
